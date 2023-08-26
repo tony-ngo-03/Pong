@@ -19,16 +19,19 @@ def initialize_screen():
     pygame.display.set_caption("PONG")
 
 
-def display_text(message: str, font_size: int, x: int, y: int, font='freesansbold.ttf',  anti_alias=True):
+def display_text(message: str, font_size: int, x: int, y: int, text_color=WHITE, background=BLACK, font='freesansbold.ttf',
+                 anti_alias=True):
     text_font = pygame.font.Font(font, font_size)
-    text = text_font.render(message, anti_alias, WHITE, BLACK)
+    text = text_font.render(message, anti_alias, text_color, background)
     text_rect = text.get_rect()
     text_rect.center = (x, y)
     SCREEN.blit(text, text_rect)
+    return text_rect
 
 
 def display_button():
-    pass
+    button = display_text("PLAY", 40, (WIDTH // 2), (HEIGHT // 4) + 200, BLACK, WHITE)
+    return button
 
 
 def before_game():
@@ -37,21 +40,23 @@ def before_game():
 
 def main():
     initialize_screen()
-
     introduction = True
     running = True
     desired_frame_rate = 60
     while running:
+
+        SCREEN.fill(BLACK)
+        if introduction:
+            before_game()
+            button = display_button()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                print("mouse clicked")
+                if introduction and button.collidepoint(pygame.mouse.get_pos()):
+                    introduction = False
 
-        SCREEN.fill(BLACK)
-        if introduction:
-            before_game()
         CLOCK.tick(desired_frame_rate)
 
         # always flip to draw
