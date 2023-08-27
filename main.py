@@ -1,5 +1,5 @@
 import pygame
-
+import Paddle
 # pygame setup
 HEIGHT = 720
 WIDTH = 1080
@@ -44,17 +44,16 @@ def main():
     running = True
     desired_frame_rate = 60
     while running:
-
         SCREEN.fill(BLACK)
         if introduction:
             before_game()
-            button = display_button()
+            play_button = display_button()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if introduction and button.collidepoint(pygame.mouse.get_pos()):
+                # if introduction is true then play_button can never be None
+                if introduction and play_button.collidepoint(pygame.mouse.get_pos()):
                     introduction = False
 
         CLOCK.tick(desired_frame_rate)
