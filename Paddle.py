@@ -8,9 +8,13 @@ class Paddle:
         self.color = color
         self.width = width
         self.height = height
+        self.rect = pygame.Rect(pos.x, pos.y, width, height)
 
     def move(self):
         pass
+
+    def draw(self, screen: pygame.surface):
+        pygame.draw.rect(screen, "white", self.rect)
+
     def get_pos(self) -> pygame.Vector2:
         return self.position
-

@@ -43,6 +43,9 @@ def main():
     introduction = True
     running = True
     desired_frame_rate = 60
+    paddle_list = []
+    player = Paddle.Paddle(pygame.Vector2(15, SCREEN.get_height() // 2), 1, "white")
+    paddle_list.append(player)
     while running:
         SCREEN.fill(BLACK)
         if introduction:
@@ -55,6 +58,11 @@ def main():
                 # if introduction is true then play_button can never be None
                 if introduction and play_button.collidepoint(pygame.mouse.get_pos()):
                     introduction = False
+        if not introduction:
+            for paddle in paddle_list:
+                paddle.draw(SCREEN)
+
+
 
         CLOCK.tick(desired_frame_rate)
 
