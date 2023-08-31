@@ -1,5 +1,6 @@
 import pygame
 import Paddle
+
 # pygame setup
 HEIGHT = 720
 WIDTH = 1080
@@ -19,7 +20,8 @@ def initialize_screen():
     pygame.display.set_caption("PONG")
 
 
-def display_text(message: str, font_size: int, x: int, y: int, text_color=WHITE, background=BLACK, font='freesansbold.ttf',
+def display_text(message: str, font_size: int, x: int, y: int, text_color=WHITE, background=BLACK,
+                 font='freesansbold.ttf',
                  anti_alias=True):
     text_font = pygame.font.Font(font, font_size)
     text = text_font.render(message, anti_alias, text_color, background)
@@ -44,7 +46,7 @@ def main():
     running = True
     desired_frame_rate = 60
     paddle_list = []
-    player = Paddle.Paddle(pygame.Vector2(15, SCREEN.get_height() // 2), 1, "white")
+    player = Paddle.Paddle(pygame.Vector2(15, SCREEN.get_height() // 2), 2.5, "white")
     paddle_list.append(player)
     while running:
         SCREEN.fill(BLACK)
@@ -58,11 +60,11 @@ def main():
                 # if introduction is true then play_button can never be None
                 if introduction and play_button.collidepoint(pygame.mouse.get_pos()):
                     introduction = False
+
         if not introduction:
+            player.move(pygame.key.get_pressed())
             for paddle in paddle_list:
                 paddle.draw(SCREEN)
-
-
 
         CLOCK.tick(desired_frame_rate)
 
