@@ -1,4 +1,6 @@
 import pygame
+
+import Ball
 import Paddle
 
 # pygame setup
@@ -40,14 +42,28 @@ def before_game():
     display_text('PONG', 50, (WIDTH // 2), (HEIGHT // 4))
 
 
+def reset_game(paddle_list: list, ball_list: list):
+    for ball in ball_list:
+        ball.reset_ball()
+    for paddle in paddle_list:
+        paddle.reset_paddle()
+
+
+
 def main():
     initialize_screen()
     introduction = True
     running = True
     desired_frame_rate = 60
     paddle_list = []
-    player = Paddle.Paddle(pygame.Vector2(15, SCREEN.get_height() // 2), 2.5, "white")
+    player = Paddle.Paddle(pygame.Vector2(15, SCREEN.get_height() // 2), 2.5, "white", True)
+    enemy = Paddle.Paddle(pygame.Vector2(SCREEN.get_width() - (2 * 15), SCREEN.get_height() // 2), 2.5, "white", False)
     paddle_list.append(player)
+    paddle_list.append(enemy)
+
+    ball_list = []
+    ball_0 = Ball.Ball(pygame.Vector2(SCREEN.get_width() // 2, SCREEN.get_height() // 2), 2.5, "white")
+    ball_list.append(ball_0)
     while running:
         SCREEN.fill(BLACK)
         if introduction:
@@ -62,9 +78,16 @@ def main():
                     introduction = False
 
         if not introduction:
-            player.move(pygame.key.get_pressed())
             for paddle in paddle_list:
+                paddle.move(pygame.key.get_pressed())
                 paddle.draw(SCREEN)
+
+            for ball in ball_list:
+                ball.move()
+                ball.draw(SCREEN, paddle_list)
+                if ball.off_screen():
+                    print("here")
+                    reset_game(paddle_list, ball_list)
 
         CLOCK.tick(desired_frame_rate)
 
