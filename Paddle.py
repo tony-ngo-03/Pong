@@ -9,11 +9,9 @@ class playerPaddle:
         self.width = width
         self.height = height
         self.rect = pygame.Rect(self.position.x, self.position.y, self.width, self.height)
-        self.default_position = pygame.Vector2(pos.x, pos.y)
         self.default_speed = speed
 
     def reset_paddle(self) -> None:
-        self.position = pygame.Vector2(self.default_position.x, self.default_position.y)
         self.speed = self.default_speed
 
     def correct_position(self):
@@ -50,14 +48,12 @@ class enemyPaddle:
         self.width = width
         self.height = height
         self.rect = pygame.Rect(self.position.x, self.position.y, self.width, self.height)
-        self.default_position = pygame.Vector2(pos.x, pos.y)
         self.default_speed = speed
 
         # control
         self.enemy_control = True
 
     def reset_paddle(self) -> None:
-        self.position = pygame.Vector2(self.default_position.x, self.default_position.y)
         self.speed = self.default_speed
 
     def correct_position(self) -> bool:

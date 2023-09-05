@@ -1,5 +1,11 @@
 import pygame
 
+TOLERANCE = 200
+BOTTOM_OOB = 720
+TOP_OOB = 0
+LEFT_OOB = 0 - TOLERANCE
+RIGHT_OOB = 1080 + TOLERANCE
+
 
 class Ball:
     # constructor of Ball
@@ -36,18 +42,18 @@ class Ball:
     # pre: none
     # post: |move_down| may change
     def move_validation(self) -> None:
-        if self.position.y + self.radius > 720:
+        if self.position.y + self.radius > BOTTOM_OOB:
             self.move_down = False
-        if self.position.y - self.radius < 0:
+        if self.position.y - self.radius < TOP_OOB:
             self.move_down = True
 
     # gives us an indication if the ball goes off the screen horizontally
     # pre: none
     # post: return True if we go off the screen horizontally, False otherwise
     def off_screen(self) -> str:
-        if self.position.x + self.radius > 1080:
+        if self.position.x + self.radius > RIGHT_OOB:
             return "P"
-        if self.position.x - self.radius < 0:
+        if self.position.x - self.radius < LEFT_OOB:
             return "E"
         return "N"
 

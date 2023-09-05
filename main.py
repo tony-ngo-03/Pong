@@ -2,7 +2,6 @@ import pygame
 
 import Ball
 import Paddle
-import Score
 import UI
 
 # pygame setup
@@ -66,7 +65,7 @@ def main():
     ball_0 = Ball.Ball(pygame.Vector2(SCREEN.get_width() // 2, SCREEN.get_height() // 2), 2.5, "white")
     ball_list.append(ball_0)
 
-    score = Score.Score()
+    score = UI.Score()
     player_score = 0
     enemy_score = 0
 
