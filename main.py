@@ -2,6 +2,7 @@ import pygame
 
 import Ball
 import Paddle
+import Score
 
 # pygame setup
 HEIGHT = 720
@@ -64,6 +65,10 @@ def main():
     ball_list = []
     ball_0 = Ball.Ball(pygame.Vector2(SCREEN.get_width() // 2, SCREEN.get_height() // 2), 2.5, "white")
     ball_list.append(ball_0)
+
+    score = Score.Score()
+    player_score = 0
+    enemy_score = 0
     while running:
         SCREEN.fill(BLACK)
         if introduction:
@@ -78,6 +83,7 @@ def main():
                     introduction = False
 
         if not introduction:
+            score.display_score(SCREEN, player_score, enemy_score)
             for paddle in paddle_list:
                 paddle.move(pygame.key.get_pressed())
                 paddle.draw(SCREEN)
