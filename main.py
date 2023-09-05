@@ -3,6 +3,7 @@ import pygame
 import Ball
 import Paddle
 import UI
+import Music
 
 # pygame setup
 HEIGHT = 720
@@ -59,6 +60,8 @@ def main():
 
     title = UI.Text('PONG', pygame.Vector2(SCREEN.get_width() // 2, 0), 32)
     play_button_rect = play_button.get_button()
+
+    Music.init()
     while running:
         SCREEN.fill(BLACK)
         if introduction:
@@ -79,15 +82,19 @@ def main():
             enemy.draw(SCREEN)
 
             for ball in ball_list:
-                ball.move()
-                ball.draw(SCREEN, paddle_list)
+                if ball.move():
+                    Music.wall_hit()
+                if ball.draw(SCREEN, paddle_list):
+                    Music.paddle_hit()
                 winner = ball.get_winner()
                 if winner == "P":
                     player_score += 1
                     reset_game(paddle_list, ball_list)
+                    Music.score()
                 if winner == "E":
                     enemy_score += 1
                     reset_game(paddle_list, ball_list)
+                    Music.score()
 
         CLOCK.tick(desired_frame_rate)
 

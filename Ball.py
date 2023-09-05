@@ -33,21 +33,27 @@ class Ball:
     # detects if the ball has collided with a paddle, and if so reverse horizontal movement
     # pre: paddle_list is a list of paddles, this_circle != None
     # post: may or may not change direction of ball
-    def bounce(self, paddle_list: list, this_circle) -> None:
+    def bounce(self, paddle_list: list, this_circle) -> bool:
+        to_return = False
         for paddle in paddle_list:
             if this_circle.colliderect(paddle):
                 self.move_left = not self.move_left
+                to_return = True
+        return to_return
 
     # makes sure the ball does not go off the top and bottom edges of the screen
     # pre: none
     # post: |move_down| may change
-    def move_validation(self) -> None:
+    def move_validation(self) -> bool:
         if self.position.y + self.radius > BOTTOM_OOB:
             self.move_down = False
+            return True
         if self.position.y - self.radius < TOP_OOB:
             self.move_down = True
+            return True
+        return False
 
-    # Determines if the ball goes off screen
+    # Determines if the ball goes off-screen
     # pre: none
     # post: Return "P" if the player wins, "E" if the enemy wins, and "N" if no one wins
     def get_winner(self) -> str:
@@ -60,7 +66,7 @@ class Ball:
     # moves the ball by |speed|
     # pre: none
     # post: |position| changed
-    def move(self) -> None:
+    def move(self) -> bool:
         if self.move_left:
             self.position.x -= self.speed
         if not self.move_left:
@@ -69,11 +75,11 @@ class Ball:
             self.position.y += self.speed
         if not self.move_down:
             self.position.y -= self.speed
-        self.move_validation()
+        return self.move_validation()
 
     # draws the ball onto the screen
     # pre: screen is type surface, paddle_list != None
     # post: returns None
-    def draw(self, screen: pygame.surface, paddle_list: list) -> None:
+    def draw(self, screen: pygame.surface, paddle_list: list) -> bool:
         this_ball = pygame.draw.circle(screen, self.color, self.position, self.radius)
-        self.bounce(paddle_list, this_ball)
+        return self.bounce(paddle_list, this_ball)
