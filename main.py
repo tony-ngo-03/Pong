@@ -15,6 +15,9 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 
+# UI
+
+
 def initialize_screen():
     global SCREEN
 
@@ -23,24 +26,10 @@ def initialize_screen():
     pygame.display.set_caption("PONG")
 
 
-def display_text(message: str, font_size: int, x: int, y: int, text_color=WHITE, background=BLACK,
-                 font='freesansbold.ttf',
-                 anti_alias=True):
-    text_font = pygame.font.Font(font, font_size)
-    text = text_font.render(message, anti_alias, text_color, background)
-    text_rect = text.get_rect()
-    text_rect.center = (x, y)
-    SCREEN.blit(text, text_rect)
-    return text_rect
-
-
-def display_button():
-    button = display_text("PLAY", 40, (WIDTH // 2), (HEIGHT // 4) + 200, BLACK, WHITE)
-    return button
-
-
-def before_game():
-    display_text('PONG', 50, (WIDTH // 2), (HEIGHT // 4))
+def before_game(play_button, title_text):
+    global SCREEN
+    play_button.display(SCREEN)
+    title_text.display(SCREEN)
 
 
 def reset_game(paddle_list: list, ball_list: list):
@@ -52,6 +41,8 @@ def reset_game(paddle_list: list, ball_list: list):
 
 def main():
     initialize_screen()
+    play_button = UI.Button('PLAY', pygame.Vector2(WIDTH / 2, HEIGHT / 2), 50)
+    title_text = UI.Text('PONG', pygame.Vector2(WIDTH / 2, 0), 50)
     introduction = True
     running = True
     desired_frame_rate = 60
@@ -70,17 +61,16 @@ def main():
     enemy_score = 0
 
     title = UI.Text('PONG', pygame.Vector2(SCREEN.get_width() // 2, 0), 32)
+    play_button_rect = play_button.get_button()
     while running:
         SCREEN.fill(BLACK)
         if introduction:
-            before_game()
-            play_button = display_button()
+            before_game(play_button, title_text)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                # if introduction is true then play_button can never be None
-                if introduction and play_button.collidepoint(pygame.mouse.get_pos()):
+                if introduction and play_button_rect.collidepoint(pygame.mouse.get_pos()):
                     introduction = False
 
         if not introduction:

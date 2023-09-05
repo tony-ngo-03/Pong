@@ -3,21 +3,38 @@ import pygame
 
 class Text:
     def __init__(self, message: str, pos: pygame.Vector2, font_size: int, font_color=(255, 255, 255),
-                 font_bg_color=(0, 0, 0), font="freesansbold.ttf") -> None:
+                 font_bg_color=(0, 0, 0)) -> None:
         self.message = message
         self.pos = pos
         self.font_size = font_size
         self.font_color = font_color
         self.font_bg_color = font_bg_color
-        self.font = pygame.font.Font(font, self.font_size)
+        self.font = pygame.font.Font("freesansbold.ttf", self.font_size)
+        self.text = self.font.render(self.message, True, self.font_color, self.font_bg_color)
+
+    def get_rect(self, position: str):
+        text_rect = self.text.get_rect()
+        if position == 'midtop':
+            text_rect.midtop = self.pos
+        if position == 'topleft':
+            text_rect.midleft = self.pos
+        return text_rect
 
     def display(self, screen: pygame.surface):
-        text_to_display = self.font.render(self.message, True, self.font_color, self.font_bg_color)
-        text_rect = text_to_display.get_rect()
-        text_rect.midtop = self.pos
-        screen.blit(text_to_display, text_rect)
+        screen.blit(self.text, self.get_rect('midtop'))
 
 
+class Button:
+    def __init__(self, message: str, pos: pygame.Vector2, font_size, font_color=(0, 0, 0),
+                 bg_color=(255, 255, 255)) -> None:
+        self.text = Text(message, pos, font_size, font_color, bg_color)
+
+    def display(self, screen: pygame.surface):
+        self.text.display(screen)
+
+
+    def get_button(self):
+        return self.text.get_rect('midtop')
 
 
 class Score:
