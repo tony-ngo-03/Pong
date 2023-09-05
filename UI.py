@@ -32,7 +32,6 @@ class Button:
     def display(self, screen: pygame.surface):
         self.text.display(screen)
 
-
     def get_button(self):
         return self.text.get_rect('midtop')
 

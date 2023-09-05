@@ -15,9 +15,6 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 
-# UI
-
-
 def initialize_screen():
     global SCREEN
 
@@ -84,7 +81,7 @@ def main():
             for ball in ball_list:
                 ball.move()
                 ball.draw(SCREEN, paddle_list)
-                winner = ball.off_screen()
+                winner = ball.get_winner()
                 if winner == "P":
                     player_score += 1
                     reset_game(paddle_list, ball_list)

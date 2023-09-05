@@ -47,10 +47,10 @@ class Ball:
         if self.position.y - self.radius < TOP_OOB:
             self.move_down = True
 
-    # gives us an indication if the ball goes off the screen horizontally
+    # Determines if the ball goes off screen
     # pre: none
-    # post: return True if we go off the screen horizontally, False otherwise
-    def off_screen(self) -> str:
+    # post: Return "P" if the player wins, "E" if the enemy wins, and "N" if no one wins
+    def get_winner(self) -> str:
         if self.position.x + self.radius > RIGHT_OOB:
             return "P"
         if self.position.x - self.radius < LEFT_OOB:
