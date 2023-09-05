@@ -3,6 +3,7 @@ import pygame
 import Ball
 import Paddle
 import Score
+import UI
 
 # pygame setup
 HEIGHT = 720
@@ -50,15 +51,14 @@ def reset_game(paddle_list: list, ball_list: list):
         paddle.reset_paddle()
 
 
-
 def main():
     initialize_screen()
     introduction = True
     running = True
     desired_frame_rate = 60
     paddle_list = []
-    player = Paddle.Paddle(pygame.Vector2(15, SCREEN.get_height() // 2), 2.5, "white", True)
-    enemy = Paddle.Paddle(pygame.Vector2(SCREEN.get_width() - (2 * 15), SCREEN.get_height() // 2), 2.5, "white", False)
+    player = Paddle.playerPaddle(pygame.Vector2(15, SCREEN.get_height() // 2), 2.5, "white")
+    enemy = Paddle.enemyPaddle(pygame.Vector2(SCREEN.get_width() - (2 * 15), SCREEN.get_height() // 2), 2.5, "white")
     paddle_list.append(player)
     paddle_list.append(enemy)
 
@@ -69,6 +69,8 @@ def main():
     score = Score.Score()
     player_score = 0
     enemy_score = 0
+
+    title = UI.Text('PONG', pygame.Vector2(SCREEN.get_width() // 2, 0), 32)
     while running:
         SCREEN.fill(BLACK)
         if introduction:
@@ -84,15 +86,21 @@ def main():
 
         if not introduction:
             score.display_score(SCREEN, player_score, enemy_score)
-            for paddle in paddle_list:
-                paddle.move(pygame.key.get_pressed())
-                paddle.draw(SCREEN)
+            title.display(SCREEN)
+            player.move(pygame.key.get_pressed())
+            player.draw(SCREEN)
+            enemy.move()
+            enemy.draw(SCREEN)
 
             for ball in ball_list:
                 ball.move()
                 ball.draw(SCREEN, paddle_list)
-                if ball.off_screen():
-                    print("here")
+                winner = ball.off_screen()
+                if winner == "P":
+                    player_score += 1
+                    reset_game(paddle_list, ball_list)
+                if winner == "E":
+                    enemy_score += 1
                     reset_game(paddle_list, ball_list)
 
         CLOCK.tick(desired_frame_rate)

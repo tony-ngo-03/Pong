@@ -44,12 +44,12 @@ class Ball:
     # gives us an indication if the ball goes off the screen horizontally
     # pre: none
     # post: return True if we go off the screen horizontally, False otherwise
-    def off_screen(self) -> bool:
+    def off_screen(self) -> str:
         if self.position.x + self.radius > 1080:
-            return True
+            return "P"
         if self.position.x - self.radius < 0:
-            return True
-        return False
+            return "E"
+        return "N"
 
     # moves the ball by |speed|
     # pre: none
