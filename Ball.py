@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 BOTTOM_OOB = 720
@@ -22,12 +24,16 @@ class Ball:
         self.default_pos = pygame.Vector2(pos.x, pos.y)
         self.default_speed = speed
 
-    # resets the ball to the center of the screen while retaining current direction
+    # resets the ball to the center of the screen while getting a random direction
     # pre: ball must have gotten off the screen
     # post: |self.position| changed
     def reset_ball(self) -> None:
         self.position = pygame.Vector2(self.default_pos.x, self.default_pos.y)
         self.speed = self.default_speed
+        self.move_left = random.randint(0, 1)
+        self.move_down = random.randint(0, 1)
+
+
 
     def did_collide(self, paddle):
         circle_center = (self.position.x + self.radius, self.position.y + self.radius)

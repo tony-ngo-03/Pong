@@ -4,6 +4,7 @@ import Ball
 import Paddle
 import UI
 import Music
+import sys
 
 # pygame setup
 pygame.init()
@@ -13,6 +14,9 @@ DESIRED_FRAME_FRATE = 60
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pong - tony-ngo-03")
 CLOCK = pygame.time.Clock()
+
+PLAYER_SCORE = 6
+ENEMY_SCORE = 0
 
 # Sound FX setup
 Music.init()
@@ -57,6 +61,34 @@ def show_introduction():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button.get_button().collidepoint(pygame.mouse.get_pos()):
                     introduction_control = False
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit(0)
+        CLOCK.tick(DESIRED_FRAME_FRATE)
+        pygame.display.flip()
+
+
+def show_ending():
+    font_size = 50
+    game_over_text = UI.Text('GAME OVER', pygame.Vector2(WIDTH / 2, 0), font_size)
+    winner = "PLAYER" if PLAYER_SCORE == 7 else "ENEMY"
+    winner_text = UI.Text(winner + " WON!", pygame.Vector2(WIDTH / 2, HEIGHT / 8), font_size)
+    play_again_button = UI.Button('PLAY AGAIN', pygame.Vector2(WIDTH / 2, HEIGHT / 4), font_size)
+
+    ending_control = True
+    while ending_control:
+        SCREEN.fill('BLACK')
+        game_over_text.display(SCREEN)
+        winner_text.display(SCREEN)
+        play_again_button.display(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if play_again_button.get_button().collidepoint(pygame.mouse.get_pos()):
+                    ending_control = False
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit(0)
         CLOCK.tick(DESIRED_FRAME_FRATE)
         pygame.display.flip()
 
@@ -100,28 +132,36 @@ def initialize_game_ui():
     return UI.Score(), UI.Text('PONG', pygame.Vector2(SCREEN.get_width() // 2, 0), 32)
 
 
-def initialize_scores():
-    return 0, 0
+def did_game_end():
+    return PLAYER_SCORE == 7 or ENEMY_SCORE == 7
 
 
 def play():
+    global PLAYER_SCORE, ENEMY_SCORE
     running = True
     paddle_list = get_paddle_list()
     ball_list = get_ball_list()
     score_ui, title_ui = initialize_game_ui()
-    player_score, enemy_score = initialize_scores()
     while running:
         SCREEN.fill(BLACK)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-        show_game_ui(score_ui, title_ui, player_score, enemy_score)
+        show_game_ui(score_ui, title_ui, PLAYER_SCORE, ENEMY_SCORE)
         handle_paddles(paddle_list)
 
         handle_ball_movement(ball_list, paddle_list)
-        player_score, enemy_score = handle_paddle_win(ball_list, paddle_list, player_score, enemy_score)
+        PLAYER_SCORE, ENEMY_SCORE = handle_paddle_win(ball_list, paddle_list, PLAYER_SCORE, ENEMY_SCORE)
+
+        if did_game_end():
+            show_ending()
+            PLAYER_SCORE = 0
+            ENEMY_SCORE = 0
+            reset_game(paddle_list, ball_list)
 
         CLOCK.tick(DESIRED_FRAME_FRATE)
         # always flip to draw
         pygame.display.flip()
+
+
