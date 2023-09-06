@@ -105,8 +105,7 @@ def initialize_scores():
 
 
 def play():
-    running = Tr
-    ue
+    running = True
     paddle_list = get_paddle_list()
     ball_list = get_ball_list()
     score_ui, title_ui = initialize_game_ui()
