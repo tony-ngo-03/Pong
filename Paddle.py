@@ -71,7 +71,7 @@ class enemyPaddle:
     def move_down(self):
         self.position.y += self.speed
 
-    def move(self):
+    def move(self, dummy):
         if self.enemy_control:
             self.move_down()
         else:

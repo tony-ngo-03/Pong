@@ -1,10 +1,9 @@
 import pygame
 
-TOLERANCE = 200
 BOTTOM_OOB = 720
 TOP_OOB = 0
-LEFT_OOB = 0 - TOLERANCE
-RIGHT_OOB = 1080 + TOLERANCE
+LEFT_OOB = 0
+RIGHT_OOB = 1080
 
 
 class Ball:
@@ -30,14 +29,25 @@ class Ball:
         self.position = pygame.Vector2(self.default_pos.x, self.default_pos.y)
         self.speed = self.default_speed
 
+    def did_collide(self, paddle):
+        circle_center = (self.position.x + self.radius, self.position.y + self.radius)
+        paddle_center = (paddle.position.x + paddle.width // 2, paddle.position.y + paddle.height // 2)
+        distance_x = abs(circle_center[0] - paddle_center[0])
+        distance_y = abs(circle_center[1] - paddle_center[1])
+        if distance_x <= (self.radius + paddle.width // 2) and distance_y <= (self.radius + paddle.height // 2):
+            return True
+        return False
+
     # detects if the ball has collided with a paddle, and if so reverse horizontal movement
     # pre: paddle_list is a list of paddles, this_circle != None
     # post: may or may not change direction of ball
-    def bounce(self, paddle_list: list, this_circle) -> bool:
+    def bounce(self, paddle_list: list) -> bool:
+        speed_increase = 1.05
         to_return = False
         for paddle in paddle_list:
-            if this_circle.colliderect(paddle):
+            if self.did_collide(paddle):
                 self.move_left = not self.move_left
+                self.speed *= speed_increase
                 to_return = True
         return to_return
 
@@ -57,9 +67,9 @@ class Ball:
     # pre: none
     # post: Return "P" if the player wins, "E" if the enemy wins, and "N" if no one wins
     def get_winner(self) -> str:
-        if self.position.x + self.radius > RIGHT_OOB:
+        if self.position.x - self.radius > RIGHT_OOB:
             return "P"
-        if self.position.x - self.radius < LEFT_OOB:
+        if self.position.x + self.radius < LEFT_OOB:
             return "E"
         return "N"
 
@@ -81,5 +91,5 @@ class Ball:
     # pre: screen is type surface, paddle_list != None
     # post: returns None
     def draw(self, screen: pygame.surface, paddle_list: list) -> bool:
-        this_ball = pygame.draw.circle(screen, self.color, self.position, self.radius)
-        return self.bounce(paddle_list, this_ball)
+        pygame.draw.circle(screen, self.color, self.position, self.radius)
+        return self.bounce(paddle_list)
