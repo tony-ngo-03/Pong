@@ -71,13 +71,39 @@ class enemyPaddle:
     def move_down(self):
         self.position.y += self.speed
 
-    def move(self, dummy):
+    def easy_move(self):
         if self.enemy_control:
             self.move_down()
         else:
             self.move_up()
         if self.correct_position():
             self.enemy_control = not self.enemy_control
+
+    def medium_move(self, ball, height):
+        time_to_reach_enemy = (self.position.x - ball.position.x) / ball.speed
+        predicted_y = ball.position.y + (ball.speed / 2) * time_to_reach_enemy
+        while predicted_y < 0 or predicted_y > height:
+            if predicted_y < 0:
+                predicted_y = -predicted_y
+            else:
+                predicted_y = height - predicted_y
+        if predicted_y > self.position.y + self.height / 2:
+            self.position.y += self.speed
+        elif predicted_y < self.position.y + self.height / 2:
+            self.position.y -= self.speed
+        self.correct_position()
+
+    def hard_move(self, ball):
+        self.position.y = ball.position.y
+        self.correct_position()
+
+    def move(self, difficulty, ball):
+        if difficulty == 'e':
+            self.easy_move()
+        elif difficulty == 'm':
+            self.medium_move(ball, 720)
+        else:
+            self.hard_move(ball)
 
     def draw(self, screen: pygame.surface):
         self.rect = pygame.Rect(self.position.x, self.position.y, self.width, self.height)

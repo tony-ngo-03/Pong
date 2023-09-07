@@ -33,8 +33,6 @@ class Ball:
         self.move_left = random.randint(0, 1)
         self.move_down = random.randint(0, 1)
 
-
-
     def did_collide(self, paddle):
         circle_center = (self.position.x + self.radius, self.position.y + self.radius)
         paddle_center = (paddle.position.x + paddle.width // 2, paddle.position.y + paddle.height // 2)
@@ -47,11 +45,11 @@ class Ball:
     # detects if the ball has collided with a paddle, and if so reverse horizontal movement
     # pre: paddle_list is a list of paddles, this_circle != None
     # post: may or may not change direction of ball
-    def bounce(self, paddle_list: list) -> bool:
+    def bounce(self, paddle_list: list, ball) -> bool:
         speed_increase = 1.05
         to_return = False
         for paddle in paddle_list:
-            if self.did_collide(paddle):
+            if ball.colliderect(paddle):
                 self.move_left = not self.move_left
                 self.speed *= speed_increase
                 to_return = True
@@ -97,5 +95,5 @@ class Ball:
     # pre: screen is type surface, paddle_list != None
     # post: returns None
     def draw(self, screen: pygame.surface, paddle_list: list) -> bool:
-        pygame.draw.circle(screen, self.color, self.position, self.radius)
-        return self.bounce(paddle_list)
+        ball = pygame.draw.circle(screen, self.color, self.position, self.radius)
+        return self.bounce(paddle_list, ball)

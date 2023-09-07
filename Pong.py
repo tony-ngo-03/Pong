@@ -77,7 +77,7 @@ def show_ending():
 
     ending_control = True
     while ending_control:
-        SCREEN.fill('BLACK')
+        SCREEN.fill(BLACK)
         game_over_text.display(SCREEN)
         winner_text.display(SCREEN)
         play_again_button.display(SCREEN)
@@ -94,7 +94,39 @@ def show_ending():
 
 
 def show_difficulty_selection():
-    pass
+    font_size = 50
+    difficulty_text = UI.Text('CHOOSE YOUR DIFFICULTY', pygame.Vector2(WIDTH / 2, 0), font_size)
+
+    easy_button = UI.Button('EASY', pygame.Vector2(WIDTH / 2, HEIGHT / 4), font_size)
+    medium_button = UI.Button('MEDIUM', pygame.Vector2(WIDTH / 2, (HEIGHT / 4) + 100), font_size)
+    hard_button = UI.Button('HARD', pygame.Vector2(WIDTH / 2, (HEIGHT / 4) + 200), font_size)
+
+    difficulty_ui_control = True
+    to_return = ''
+    while difficulty_ui_control:
+        SCREEN.fill(BLACK)
+        difficulty_text.display(SCREEN)
+        easy_button.display(SCREEN)
+        medium_button.display(SCREEN)
+        hard_button.display(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if easy_button.get_button().collidepoint(pygame.mouse.get_pos()):
+                    difficulty_ui_control = False
+                    to_return = 'e'
+                if medium_button.get_button().collidepoint(pygame.mouse.get_pos()):
+                    difficulty_ui_control = False
+                    to_return = 'm'
+                if hard_button.get_button().collidepoint(pygame.mouse.get_pos()):
+                    difficulty_ui_control = False
+                    to_return = 'h'
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit(0)
+        CLOCK.tick(DESIRED_FRAME_FRATE)
+        pygame.display.flip()
+    return to_return
 
 
 def show_game_ui(score_ui, title_ui, player_score, enemy_score):
@@ -102,10 +134,12 @@ def show_game_ui(score_ui, title_ui, player_score, enemy_score):
     title_ui.display(SCREEN)
 
 
-def handle_paddles(paddle_list):
-    for paddle in paddle_list:
-        paddle.move(pygame.key.get_pressed())
-        paddle.draw(SCREEN)
+def handle_paddles(paddle_list, difficulty, ball_pos):
+    paddle_list[0].move(pygame.key.get_pressed())
+    paddle_list[0].draw(SCREEN)
+
+    paddle_list[1].move(difficulty, ball_pos)
+    paddle_list[1].draw(SCREEN)
 
 
 def handle_ball_movement(ball_list, paddle_list):
@@ -138,10 +172,12 @@ def did_game_end():
 
 def play():
     global PLAYER_SCORE, ENEMY_SCORE
+    difficulty = show_difficulty_selection()
     running = True
     paddle_list = get_paddle_list()
     ball_list = get_ball_list()
     score_ui, title_ui = initialize_game_ui()
+
     while running:
         SCREEN.fill(BLACK)
         for event in pygame.event.get():
@@ -149,7 +185,7 @@ def play():
                 running = False
 
         show_game_ui(score_ui, title_ui, PLAYER_SCORE, ENEMY_SCORE)
-        handle_paddles(paddle_list)
+        handle_paddles(paddle_list, difficulty, ball_list[0])
 
         handle_ball_movement(ball_list, paddle_list)
         PLAYER_SCORE, ENEMY_SCORE = handle_paddle_win(ball_list, paddle_list, PLAYER_SCORE, ENEMY_SCORE)
@@ -163,5 +199,3 @@ def play():
         CLOCK.tick(DESIRED_FRAME_FRATE)
         # always flip to draw
         pygame.display.flip()
-
-
